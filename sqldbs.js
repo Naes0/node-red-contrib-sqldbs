@@ -28,7 +28,6 @@ module.exports = function(RED) {
         this.cancelTimeout = n.cancelTimeout;
         this.connectTimeout = n.connectTimeout;
         this.maxRetriesOnTransientErrors = n.maxRetriesOnTransientErrors;
-        this.port = n.port;
         this.requestTimeout = n.requestTimeout;
         this.tdsVersion = n.tdsVersion;
         this.connected = false;
