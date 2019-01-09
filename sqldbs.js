@@ -43,12 +43,12 @@ module.exports = function(RED) {
             //msg.test = node.test;
 			node.connection = new Sequelize(node.dbname, node.credentials.user, node.credentials.password, {
                 host: node.host,
-                port: parseInt(node.port),
+                port: parseInt(node.port) || undefined,
                 dialect: node.dialect,
-                cancelTimeout: parseInt(node.cancelTimeout),
-                connectTimeout: parseInt(node.connectTimeout),
-                maxRetriesOnTransientErrors: parseInt(node.maxRetriesOnTransientErrors),
-                requestTimeout: parseInt(node.requestTimeout),
+                cancelTimeout: parseInt(node.cancelTimeout) || undefined,
+                connectTimeout: parseInt(node.connectTimeout) || undefined,
+                maxRetriesOnTransientErrors: parseInt(node.maxRetriesOnTransientErrors) || undefined,
+                requestTimeout: parseInt(node.requestTimeout) || undefined,
                 tdsVersion: node.tdsVersion,
                 pool: {
                     max: 5,
