@@ -18,12 +18,19 @@ module.exports = function(RED) {
     var reconnect = RED.settings.sqldbsReconnectTime || 30000;
     var Sequelize = require('sequelize');
     var util = require("util");
+
     function sqldbsNode(n) {
         console.dir(n);
 		RED.nodes.createNode(this,n);
         this.host = n.host;
         this.port = n.port;
         this.tz = n.tz || "local";
+        this.cancelTimeout = n.cancelTimeout;
+        this.connectTimeout = n.connectTimeout;
+        this.maxRetriesOnTransientErrors = n.maxRetriesOnTransientErrors;
+        this.port = n.port;
+        this.requestTimeout = n.requestTimeout;
+        this.tdsVersion = n.tdsVersion;
         this.connected = false;
         this.connecting = false;
         this.dbname = n.db;
@@ -34,14 +41,20 @@ module.exports = function(RED) {
             console.log("dialect: " + node.dialect);
 			node.connecting = true;
             //console.log(node.credentials.password);
+            //msg.test = node.test;
 			node.connection = new Sequelize(node.dbname, node.credentials.user, node.credentials.password, {
                 host: node.host,
-                port: node.port,
+                port: parseInt(node.port),
                 dialect: node.dialect,
+                cancelTimeout: parseInt(node.cancelTimeout),
+                connectTimeout: parseInt(node.connectTimeout),
+                maxRetriesOnTransientErrors: parseInt(node.maxRetriesOnTransientErrors),
+                requestTimeout: parseInt(node.requestTimeout),
+                tdsVersion: node.tdsVersion,
                 pool: {
                     max: 5,
                     min: 0,
-                    idle: 10000
+                    idle: 10000,
                 },
             });
 			console.dir(node.connection);
@@ -71,7 +84,7 @@ module.exports = function(RED) {
                 try {
                     /*node.connection.connectionManager.close()(function(err) {
                         util.log("connection is closing 1");
-                        if (err) { 
+                        if (err) {
                             node.error(err);
                             util.log("Closing connection: " + err);
                         }
@@ -88,12 +101,14 @@ module.exports = function(RED) {
             }
         });
     }
+    //create the DB configuration node
     RED.nodes.registerType("sqldbsdatabase",sqldbsNode, {
         credentials: {
             user: {type: "text"},
             password: {type: "password"}
         }
     });
+
     function sqlNodeIn(n) {
         RED.nodes.createNode(this,n);
         //console.dir(n);
@@ -116,7 +131,7 @@ module.exports = function(RED) {
                         qtype = node.mydbConfig.connection.QueryTypes.UPDATE;
                     else if (node.querytype == "delete")
                         qtype = node.mydbConfig.connection.QueryTypes.DELETE;
-                    node.mydbConfig.connection.query(msg.topic, qtype) 
+                    node.mydbConfig.connection.query(msg.topic, qtype)
                     .then(function(recordset) {
                         msg.payload = recordset;
                         node.send(msg);
@@ -124,7 +139,7 @@ module.exports = function(RED) {
                     .catch(function(err) {
                         util.log("Error requesting: " + err);
                         node.error(err);
-                    })                            
+                    })
                 }
                 else {
                     if (typeof msg.topic !== 'string') { node.error("msg.topic : the query is not defined as a string"); }
@@ -135,5 +150,6 @@ module.exports = function(RED) {
             this.error("sqldbs database not configured");
         }
     }
+    //  creates the flow node
     RED.nodes.registerType("sqldbs",sqlNodeIn);
 }
