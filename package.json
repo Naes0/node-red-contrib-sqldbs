@@ -9,7 +9,7 @@
     "pg-hstore": "^2.3.2",
     "sequelize": "Naes0/sequelize#v3.30.5",
     "sqlite3": "^3.1.8",
-    "tedious": "git://github.com/Naes0/tedious.git#17df2ec"
+    "tedious": "https://github.com/Naes0/tedious.git#17df2ec"
 
   },
   "repository": {
