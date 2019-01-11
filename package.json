@@ -3,12 +3,12 @@
   "version": "1.1.9",
   "description": "Node-RED node to access different database engines",
   "dependencies": {
-    "mysql": "2.13.0",
-    "mysql2": "1.2.0",
-    "pg": "6.1.5",
-    "pg-hstore": "2.3.2",
+    "mysql": "^2.13.0",
+    "mysql2": "^1.2.0",
+    "pg": "^6.1.5",
+    "pg-hstore": "^2.3.2",
     "sequelize": "Naes0/sequelize#v3.30.5",
-    "sqlite3": "4.0.4",
+    "sqlite3": "^3.1.8",
     "tedious": "Naes0/tedious#v2.7.2"
 
   },
